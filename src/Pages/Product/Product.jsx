@@ -47,6 +47,7 @@ export default function Product() {
         nextLabel={"Next →"}
         pageCount={pageCount}
         onPageChange={handlePageClick}
+        forcePage={currentPage}
         containerClassName={"pagination"}
         activeClassName={"active"}
         pageLinkClassName={"page-link"}

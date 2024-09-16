@@ -170,8 +170,15 @@ body {
     stroke-dashoffset: 40.84;
   }
 }
+.pagination {
+  text-align: center; /* Center the pagination */
+  padding: 5px; /* Add padding around the pagination */
+  margin-top: 20px; /* Optional: add some space above the pagination */
+}
+
 .pagination li {
   display: inline-block;
+  margin: 0 5px; /* Optional: Add space between pagination items */
 }
 
 .page-link,
