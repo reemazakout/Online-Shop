@@ -1,0 +1,22 @@
+/* Customize the pagination dots */
+.swiper-pagination-bullet {
+  background-color: #0aad0a; /* Default dot color */
+  opacity: 1;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #0aad0a; /* Active dot color */
+}
+
+/* Customize the navigation arrows */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #0aad0a; /* Arrow color */
+  transition: color 0.3s;
+}
+
+/* Optional: Change arrow color on hover */
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  color: #0aad0a; /* Hover color */
+}
