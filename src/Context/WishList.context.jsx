@@ -29,7 +29,6 @@ export default function WishListProvider({ children }) {
       if (data.count === 0) {
         setWishList([]);
       } else {
-        // * EDIT 👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇
         getWishList();
         toast.success("Product removed from wishlist");
       }
@@ -73,7 +72,6 @@ export default function WishListProvider({ children }) {
       const { data } = await axios.request(options);
       console.log(data);
 
-      // * EDIT 👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇
       setWishList({ ...data, count: data.data.length });
       toast.success("Product added to wishlist");
     } catch (error) {
