@@ -8,9 +8,9 @@ import { Helmet } from "react-helmet";
 export default function AllOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { token } = useContext(UserContext);
 
- 
   let id = null;
   try {
     id = jwtDecode(token)?.id;
@@ -19,7 +19,10 @@ export default function AllOrders() {
   }
 
   async function getOrders() {
-    if (!id) return; 
+    if (!id) {
+      setLoading(false);
+      return;
+    }
 
     const options = {
       url: `https://ecommerce.routemisr.com/api/v1/orders/user/${id}`,
@@ -28,11 +31,12 @@ export default function AllOrders() {
 
     try {
       const { data } = await axios.request(options);
-      setOrders(data?.orders || []); 
-    } catch (error) {
-      console.error("Error fetching orders:", error);
+      setOrders(data?.orders || []); // ضمان أن الطلبات تكون مصفوفة
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+      setError("Failed to fetch orders. Please try again later."); // ضبط رسالة الخطأ
     } finally {
-      setLoading(false); 
+      setLoading(false); // إيقاف التحميل دائمًا
     }
   }
 
@@ -46,8 +50,11 @@ export default function AllOrders() {
         <title>All Orders</title>
         <meta name="description" content="All Orders Page" />
       </Helmet>
+
       {loading ? (
         <Loading />
+      ) : error ? (
+        <div className="text-center text-red-500">{error}</div>
       ) : orders.length === 0 ? (
         <div className="text-center py-10">
           <h1 className="text-3xl font-bold text-center text-primary py-28">
