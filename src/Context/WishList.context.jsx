@@ -1,22 +1,27 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import { UserContext } from "./User.context";
 import axios from "axios";
 import toast from "react-hot-toast";
 
 export const WishListContext = createContext(null);
 
-// eslint-disable-next-line react/prop-types
 export default function WishListProvider({ children }) {
   const { token } = useContext(UserContext);
   const [wishList, setWishList] = useState(null);
 
-  // useEffect(() => {
-  //   if (token) {
-  //     getWishList();
-  //   }
-  // }, []);
+  const handleUnauthorized = () => {
+    toast.error("You must be logged in first");
+    setTimeout(() => {
+      window.location.href = "/auth/login";
+    }, 1500); // Delay to show toast message before redirect
+  };
 
   async function removeWishList({ id }) {
+    if (!token) {
+      handleUnauthorized();
+      return;
+    }
+
     const options = {
       url: `https://ecommerce.routemisr.com/api/v1/wishlist/${id}`,
       method: "DELETE",
@@ -30,15 +35,24 @@ export default function WishListProvider({ children }) {
         setWishList([]);
       } else {
         getWishList();
-        toast.success("Product removed from wishlist");
+        toast.success("Product removed from wishlist successfully");
       }
     } catch (error) {
       console.error("Error removing product from wishlist:", error);
-      toast.error("Failed to remove product from wishlist");
+      if (error.response?.status === 401) {
+        handleUnauthorized();
+      } else {
+        toast.error("Failed to remove product from wishlist");
+      }
     }
   }
 
   async function getWishList() {
+    if (!token) {
+      setWishList(null);
+      return;
+    }
+
     const options = {
       url: "https://ecommerce.routemisr.com/api/v1/wishlist",
       method: "GET",
@@ -49,15 +63,22 @@ export default function WishListProvider({ children }) {
     try {
       const { data } = await axios.request(options);
       setWishList(data);
-      console.log("GET");
-      console.log(data);
     } catch (error) {
       console.error("Error fetching wishlist:", error);
-      toast.error("Failed to fetch wishlist");
+      if (error.response?.status === 401) {
+        handleUnauthorized();
+      } else {
+        toast.error("Failed to fetch wishlist");
+      }
     }
   }
 
   async function addWishList({ id }) {
+    if (!token) {
+      handleUnauthorized();
+      return;
+    }
+
     const options = {
       url: "https://ecommerce.routemisr.com/api/v1/wishlist",
       method: "POST",
@@ -70,13 +91,15 @@ export default function WishListProvider({ children }) {
     };
     try {
       const { data } = await axios.request(options);
-      console.log(data);
-
       setWishList({ ...data, count: data.data.length });
-      toast.success("Product added to wishlist");
+      toast.success("Product added to wishlist successfully");
     } catch (error) {
       console.error("Error adding product to wishlist:", error);
-      toast.error("Failed to add product to wishlist");
+      if (error.response?.status === 401) {
+        handleUnauthorized();
+      } else {
+        toast.error("Failed to add product to wishlist");
+      }
     }
   }
 

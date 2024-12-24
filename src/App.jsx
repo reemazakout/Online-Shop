@@ -1,4 +1,8 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 import Layout from "./Componants/Layout/Layout.jsx";
 import Register from "./Pages/Register/Register.jsx";
 import Notfound from "./Pages/Notfound/Notfound.jsx";
@@ -43,8 +47,22 @@ const routes = createBrowserRouter([
       { path: "/Brands/:id", element: <BrandDetails /> },
       { path: "/categories/:id/subcategories", element: <SubCategory /> },
       { path: "/checkout", element: <Checkout /> },
-      { path: "/wishlist", element: <WishList /> },
-      { path: "/cart", element: <Cart /> },
+      {
+        path: "/wishlist",
+        element: (
+          <ProtectedRoute>
+            <WishList />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/cart",
+        element: (
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        ),
+      },
       { path: "/allorders", element: <AllOrders /> },
       { path: "/product", element: <Product /> },
       { path: "/Brands", element: <Brands /> },
@@ -54,19 +72,11 @@ const routes = createBrowserRouter([
       { path: "/resetpassword", element: <UpdateLogedUser /> },
       {
         index: true,
-        element: (
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        ),
+        element: <Navigate to="/home" replace />,
       },
       {
         path: "home",
-        element: (
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        ),
+        element: <Home />,
       },
       { path: "*", element: <Notfound /> },
     ],

@@ -1,5 +1,4 @@
 import { Link, NavLink } from "react-router-dom";
-import logo from "../../assets/images/Loo.png";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../Context/User.context";
 import { CartContext } from "../../Context/Cart.context";
@@ -29,7 +28,7 @@ export default function NavBar() {
         <h1 className="hidden md:block flex-shrink-0">
           <a href="/">
             <div className="flex items-center gap-2">
-              <span className="text-primary font-extrabold  text-3xl">
+              <span className="text-primary font-extrabold text-3xl">
                 OnlineShop
               </span>
             </div>
@@ -55,35 +54,36 @@ export default function NavBar() {
           } md:flex w-full md:w-auto justify-center`}
         >
           <div className="flex flex-col md:flex-row md:gap-6 items-center mt-4 md:mt-0 w-full md:w-auto">
-            {token && (
-              <ul className="flex flex-col md:flex-row md:gap-6 items-center mt-4 md:mt-0 gap-4">
-                <li>
-                  <NavLink className={navLinkClass} to="/home">
-                    Home
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink className={navLinkClass} to="/product">
-                    Product
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink className={navLinkClass} to="/categories">
-                    Categories
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink className={navLinkClass} to="/brands">
-                    Brands
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink className={navLinkClass} to="/allorders">
-                    Orders
-                  </NavLink>
-                </li>
-              </ul>
-            )}
+            {/* Main Navigation - Always Visible */}
+            <ul className="flex flex-col md:flex-row md:gap-6 items-center mt-4 md:mt-0 gap-4">
+              <li>
+                <NavLink className={navLinkClass} to="/home">
+                  Home
+                </NavLink>
+              </li>
+              <li>
+                <NavLink className={navLinkClass} to="/product">
+                  Product
+                </NavLink>
+              </li>
+              <li>
+                <NavLink className={navLinkClass} to="/categories">
+                  Categories
+                </NavLink>
+              </li>
+              <li>
+                <NavLink className={navLinkClass} to="/brands">
+                  Brands
+                </NavLink>
+              </li>
+              <li>
+                <NavLink className={navLinkClass} to="/allorders">
+                  Orders
+                </NavLink>
+              </li>
+            </ul>
+
+            {/* Cart and Wishlist - Only for logged in users */}
             {token && (
               <>
                 <Link to="/wishlist" className="cursor-pointer relative">
@@ -110,6 +110,7 @@ export default function NavBar() {
               </>
             )}
 
+            {/* Social Media Links */}
             <ul className="flex flex-col md:flex-row md:gap-6 items-center mt-4 md:mt-0 gap-4">
               <li>
                 <a href="https://www.facebook.com" aria-label="Facebook">
@@ -133,6 +134,7 @@ export default function NavBar() {
               </li>
             </ul>
 
+            {/* Authentication Links */}
             <ul className="flex flex-col md:flex-row md:gap-6 items-center mt-4 md:mt-0 gap-4">
               {!token ? (
                 <>

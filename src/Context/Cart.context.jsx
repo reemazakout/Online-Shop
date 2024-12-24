@@ -5,35 +5,23 @@ import toast from "react-hot-toast";
 
 export const CartContext = createContext(null);
 
-// eslint-disable-next-line react/prop-types
 export default function CartProvider({ children }) {
   const [cartInfo, setCartInfo] = useState(null);
-
   const { token } = useContext(UserContext);
 
-  async function getCartInfo() {
-    const options = {
-      url: "https://ecommerce.routemisr.com/api/v1/cart",
-      method: "GET",
-      headers: {
-        token,
-      },
-    };
-    try {
-      const { data } = await axios.request(options);
-      setCartInfo(data);
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-      if (error.response.data.message.includes("No cart")) {
-        setCartInfo([]);
-      } else {
-        toast.error(error.response.data.message);
-      }
-    }
-  }
+  const handleUnauthorized = () => {
+    toast.error("You must be logged in first");
+    setTimeout(() => {
+      window.location.href = "/auth/login";
+    }, 1500); // Delay to show toast message before redirect
+  };
 
   async function AddProductToCart({ id }) {
+    if (!token) {
+      handleUnauthorized();
+      return;
+    }
+
     const options = {
       url: "https://ecommerce.routemisr.com/api/v1/cart",
       method: "POST",
@@ -46,15 +34,52 @@ export default function CartProvider({ children }) {
     };
     try {
       const { data } = await axios.request(options);
-
       setCartInfo(data);
-      toast.success("product added to cart");
-      console.log(data);
+      toast.success("Product added to cart successfully");
     } catch (error) {
       console.log(error);
+      if (error.response?.status === 401) {
+        handleUnauthorized();
+      } else {
+        toast.error(error.response?.data?.message || "Something went wrong");
+      }
     }
   }
+
+  async function getCartInfo() {
+    if (!token) {
+      setCartInfo(null);
+      return;
+    }
+
+    const options = {
+      url: "https://ecommerce.routemisr.com/api/v1/cart",
+      method: "GET",
+      headers: {
+        token,
+      },
+    };
+    try {
+      const { data } = await axios.request(options);
+      setCartInfo(data);
+    } catch (error) {
+      console.log(error);
+      if (error.response?.data?.message?.includes("No cart")) {
+        setCartInfo([]);
+      } else if (error.response?.status === 401) {
+        handleUnauthorized();
+      } else {
+        toast.error(error.response?.data?.message || "Failed to fetch cart");
+      }
+    }
+  }
+
   async function UpdateProductToCart({ id, count }) {
+    if (!token) {
+      handleUnauthorized();
+      return;
+    }
+
     const options = {
       url: `https://ecommerce.routemisr.com/api/v1/cart/${id}`,
       method: "PUT",
@@ -68,13 +93,23 @@ export default function CartProvider({ children }) {
     try {
       const { data } = await axios.request(options);
       setCartInfo(data);
-      toast.success("product updated successfully");
-      console.log(data);
+      toast.success("Product quantity updated successfully");
     } catch (error) {
       console.log(error);
+      if (error.response?.status === 401) {
+        handleUnauthorized();
+      } else {
+        toast.error("Failed to update product quantity");
+      }
     }
   }
+
   async function RemoveProductToCart({ id }) {
+    if (!token) {
+      handleUnauthorized();
+      return;
+    }
+
     const options = {
       url: `https://ecommerce.routemisr.com/api/v1/cart/${id}`,
       method: "DELETE",
@@ -89,13 +124,23 @@ export default function CartProvider({ children }) {
       } else {
         setCartInfo(data);
       }
-      toast.success("product Removed from cart");
-      console.log(data);
+      toast.success("Product removed from cart successfully");
     } catch (error) {
       console.log(error);
+      if (error.response?.status === 401) {
+        handleUnauthorized();
+      } else {
+        toast.error("Failed to remove product from cart");
+      }
     }
   }
+
   async function clearCart() {
+    if (!token) {
+      handleUnauthorized();
+      return;
+    }
+
     const options = {
       url: "https://ecommerce.routemisr.com/api/v1/cart",
       method: "DELETE",
@@ -105,13 +150,18 @@ export default function CartProvider({ children }) {
     };
     try {
       const { data } = await axios.request(options);
-      toast.success("cart cleared successfully");
+      toast.success("Cart cleared successfully");
       setCartInfo([]);
-      console.log(data);
     } catch (error) {
       console.log(error);
+      if (error.response?.status === 401) {
+        handleUnauthorized();
+      } else {
+        toast.error("Failed to clear cart");
+      }
     }
   }
+
   return (
     <CartContext.Provider
       value={{

@@ -1,9 +1,9 @@
-import ProductCard from "../../Componants/ProductCard/ProductCard";
 import Loading from "../../Componants/Loading/Loading";
 import HomeSlider from "../../Componants/HomeSlider/HomeSlider";
 import CategorySlider from "../../Componants/CategorySlider/CategorySlider";
 import useProduct from "../../Hooks/useProduct";
 import { Helmet } from "react-helmet";
+import Product from "../Product/Product";
 
 export default function Home() {
   const { data, isLoading } = useProduct(); // destructiong from response  , also I can make const response = useProduct();
@@ -20,11 +20,7 @@ export default function Home() {
       </Helmet>
       <CategorySlider></CategorySlider>
       <HomeSlider></HomeSlider>
-      <div className="py-4 container gap-4 grid grid-cols-12">
-        {data.data.data.map((product) => {
-          return <ProductCard productInfo={product} key={product.id} />;
-        })}
-      </div>
+      <Product></Product>
     </>
   );
 }
